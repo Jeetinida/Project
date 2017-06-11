@@ -1,0 +1,363 @@
+<!--<script type="text/javascript" src="first.php"></script>-->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Waypoints in directions</title>
+    <style>
+	
+	
+	#map{
+            height: 100%;
+            margin: 0px;
+            padding: 0px;
+        }
+	
+	
+	#right-panel .group #submit{
+	background:#1161ee;
+}
+		
+	
+	
+	#right-panel .group b{
+	color:#aaa;
+	font-size:12px;
+}
+	
+	#right-panel .group #start,
+	#right-panel .group #end,
+#right-panel .group .button{
+	border:none;
+	padding:15px 20px;
+	border-radius:25px;
+	background:rgba(255,255,255,.1);
+}
+	
+	
+	
+	#right-panel .group b,
+#right-panel .group .input,
+#right-panel .group .button{
+	width:100%;
+	color:#fff;
+	display:block;
+	
+}
+.
+	
+	#right-panel .group{
+	
+	margin-bottom:15px;
+}
+	
+	#right-panel{
+	min-height:345px;
+	position:relative;
+	-webkit-perspective:1000px;
+	        perspective:1000px;
+	-webkit-transform-style:preserve-3d;
+	        transform-style:preserve-3d;
+}
+    
+
+      #right-panel select, #right-panel input {
+        font-size: 15px;
+      }
+
+      #right-panel select {
+        width: 100%;
+      }
+
+      #right-panel i {
+        font-size: 12px;
+      }
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      #map {
+		width:160%;
+        height: 100%;
+        float: left;
+        width: 50%;
+        height: 100%;
+		position:absolute;
+      }
+      #right-panel {
+      
+		width:74%;
+		height:80%;
+		position:absolute;
+		padding:90px 70px 50px 70px;
+		background:rgba(40,57,101,.9);
+
+      }
+      #directions-panel {
+        margin-top: 600px;
+        background-color: #9B90C3;
+        padding: 10px;
+        overflow: scroll;
+		width:100px;
+        height: 174px;
+		position:absolute;
+		color:white;
+      }
+	.me{
+	width:80%;
+
+	margin:auto;
+	max-width:525px;
+	min-height:670px;
+	position:relative;
+	background:url(https://raw.githubusercontent.com/khadkamhn/day-01-login-form/master/img/bg.jpg) no-repeat center;
+	box-shadow:0 12px 15px 0 rgba(0,0,0,.24),0 17px 50px 0 rgba(0,0,0,.19);
+}
+
+#right-panel .me1
+{
+	text-transform:uppercase;
+}
+body{
+	margin:0;
+	color:#6a6f8c;
+	background:#c8c8c8;
+	font:600 16px/18px 'Open Sans',sans-serif;
+}
+    </style>
+	
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<!-- <script type="text/javascript" src="https://maps.googleapis.com/maps/api/directions/json?origin=Ahmedabad&destination=Mumnbai&departure_time=now&key=AIzaSyCNsT264j4K9s3Ou6bSQ2pPeJLVahgySEE"></script>
+ -->
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true&libraries=places&key=AIzaSyCNsT264j4K9s3Ou6bSQ2pPeJLVahgySEE"></script>
+ 
+   <script type="text/javascript" src="https://maps.googleapis.com/maps/api/directions/json?origin=Ahmedabad&destination=Mumnbai&departure_time=now&key=AIzaSyCw1EDTRt9Zx0Vxe4MzXn5uC5lS-rlViAA"></script>
+
+   <!--  <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true&libraries=places"></script>
+  -->
+    <script type="text/javascript">
+	
+		
+			var url_string = location.href;
+			var url = new URL(url_string);
+			var c = url.searchParams.get("id1");
+			console.log(c);
+			var x=localStorage.getItem("my");
+			console.log(x);
+			
+			if(c==x && c!=null && x!=null)
+			{
+				localStorage.removeItem("my");
+				x1=null;
+				console.log(x1);
+			}
+			else
+			{
+			window.location.href="welcome.php";
+			
+			}
+	
+	
+	
+       var directionsDisplay;
+         var directionsService = new google.maps.DirectionsService();
+       var map;
+    var colors = ['Magento', 'Brown' ,'Yellow'];     
+      function initialize() {
+      directionsDisplay = new google.maps.DirectionsRenderer();
+            var chicago = new google.maps.LatLng(41.850033, -87.6500523);
+            var mapOptions = {
+                zoom: 7,
+                center: chicago
+            }
+            var input=document.getElementById('start');
+            var autocomplete = new google.maps.places.Autocomplete(input);
+            var input1=document.getElementById('end');
+            var autocomplete = new google.maps.places.Autocomplete(input1);
+            
+            map = new google.maps.Map(document.getElementById('map'), mapOptions);
+            directionsDisplay.setMap(map);
+        }
+ 
+
+       function calcRoute() {
+       document.getElementById( 'map' ).scrollIntoView();
+      //var service = new google.maps.DistanceMatrixService;
+ // var   origin = document.getElementById('start').value;;
+ // var   destination =document.getElementById('end').value;;
+    
+          var start = document.getElementById('start').value;
+            var end = document.getElementById('end').value;
+
+            var request = {
+                origin: start,
+                destination: end,
+                travelMode: google.maps.TravelMode.DRIVING,
+                provideRouteAlternatives: true,
+                optimizeWaypoints:true,
+                unitSystem: google.maps.UnitSystem.METRIC
+        
+            };
+  directionsService.route(request, function (response, status) {
+        if (status == google.maps.DirectionsStatus.OK) {
+    
+            for (var i = 0, len = response.routes.length; i < len; i++) {
+                new google.maps.DirectionsRenderer({
+              map: map,
+              directions: response,
+              routeIndex: i,
+               polylineOptions: {
+                strokeColor: colors[i]
+          }
+                });
+      document.getElementById("directions-panel").innerHTML+='>>>><b>Route'+ (i+1)+'</b><br>'+(colors[i])+' Line<br>';
+      document.getElementById("directions-panel").innerHTML += response.routes[i].legs[0].start_address + ' to '; + '<br>';
+    document.getElementById("directions-panel").innerHTML += response.routes[i].legs[0].end_address +'<br>';
+          
+
+     document.getElementById("directions-panel").innerHTML += '   Distance is ' +  (response.routes[i].legs[0].distance.text) + '<br>';
+     
+      document.getElementById("directions-panel").innerHTML += '  Time is ' +  (response.routes[i].legs[0].duration.text) + '<br><br><br>';
+	  document.getElementById("directions-panel").innerHTML+='<hr>  <br><br>'
+	  
+	  directionsDisplay.setDirections(response);
+            }
+      f1();
+        } else {
+            $("#error").append("Unable to retrieve your route<br />");
+        }
+    });
+
+}
+     /* directionsService.route(request, function (response, status) {
+                if (status == google.maps.DirectionsStatus.OK) {
+    
+                    directionsDisplay.setDirections(response);
+        
+            f1();
+            time();
+            nice();
+                }
+        });*/
+        function f1(){
+    var service = new google.maps.DistanceMatrixService;
+    var origin = document.getElementById('start').value;
+    var destination = document.getElementById('end').value;
+    service.getDistanceMatrix({
+    origins: [origin],
+    destinations: [destination],
+    travelMode: google.maps.TravelMode.DRIVING,
+    unitSystem: google.maps.UnitSystem.METRIC,
+  
+  }, function(response, status) {
+    if (status !== google.maps.DistanceMatrixStatus.OK) {
+      alert('Error was: ' + status);
+    } else {
+ // document.getElementById("result").innerHTML += '2) Distance:' +  JSON.stringify(response.rows[0].elements[0]['distance']['text']) + '<br>';
+   //   document.getElementById("result1").innerHTML += '1) Time To Travel: ' +  JSON.stringify(response.rows[0].elements[0]['duration']['text']) +'<br><br>'; 
+
+    trafficSetup();
+  
+// alert(response.originAddresses[0] + ' ' + response.destinationAddresses[0] + ' ==> ' + response.rows[0].elements[0].duration.text + ' ' + response.rows[0].elements[0].distance.text);
+    }
+  });
+}
+    trafficSetup = function() {         
+          // Creating a Custom Control and appending it to the map
+          var controlDiv = document.createElement('div'), 
+            controlUI = document.createElement('div'), 
+            trafficLayer = new google.maps.TrafficLayer();
+              
+          jQuery(controlDiv).addClass('gmap-control-container').addClass('gmnoprint');
+          jQuery(controlUI).text('Traffic').addClass('gmap-control');
+          jQuery(controlDiv).append(controlUI);       
+              
+          // Traffic Btn Click Event    
+          google.maps.event.addDomListener(controlUI, 'click', function() {
+            if (typeof trafficLayer.getMap() == 'undefined' || trafficLayer.getMap() === null) {
+              jQuery(controlUI).addClass('gmap-control-active');
+              trafficLayer.setMap(map);
+            } else {
+              trafficLayer.setMap(null);
+              jQuery(controlUI).removeClass('gmap-control-active');
+            }
+          });               
+          map.controls[google.maps.ControlPosition.TOP_RIGHT].push(controlDiv); 
+            
+        }
+    /*  function time(){
+        var origin = document.getElementById('start').value;
+        var destination = document.getElementById('end').value;
+    
+      var service = new google.maps.DistanceMatrixService();
+       service.getDistanceMatrix(
+      {
+            origin: origin,
+            destination: destination,
+            travelMode: google.maps.DirectionsTravelMode.DRIVING,
+            
+          
+              drivingOptions: {
+          departureTime: new Date(Date.now() + N),  // for the time N milliseconds from now.
+          trafficModel: 'optimistic'
+      }
+      });
+      function nice(response, status) {
+          
+           
+        }
+      }*/
+      google.maps.event.addDomListener(window, 'load', initialize);
+ 
+
+
+    
+    </script>
+    </head>
+  <body>
+  
+ 
+ 
+	<div class="me" >
+    <div id="right-panel">
+    <div>
+	<div class="group">
+    <b class="me1">Start:</b>
+    <input type="text" id="start" name="start" class="input" placeholder="Source"/>
+	</div>
+    <br>
+    <!-- <b>Waypoints:</b> <br>
+    <i>(Ctrl+Click or Cmd+Click for multiple selection)</i> <br>
+    <select multiple id="waypoints">
+      <option value="montreal, quebec">Montreal, QBC</option>
+      <option value="toronto, ont">Toronto, ONT</option>
+      <option value="chicago, il">Chicago</option>
+      <option value="winnipeg, mb">Winnipeg</option>
+      <option value="fargo, nd">Fargo</option>
+      <option value="calgary, ab">Calgary</option>
+      <option value="spokane, wa">Spokane</option>
+    </select>
+     -->
+     <br>
+	 <div class="group">
+    <b class="me1" style="position:relative;margin-top:45px">End:</b>
+    <input type="text" id="end" name="end" class="input" placeholder="end"/>
+	</div>
+    <br>
+	 <div class="group" style="position:relative;margin-top:60px">
+      <input type="submit" id="submit" class="button" onclick="calcRoute()">
+	  </div>
+    </div>
+    
+    </div>
+	</div>
+	<br>
+	   <div id="map" class="second" style="margin-left:0px;margin-top:0px;width:800px;height:610px;position:relative;float:left"></div>
+	   
+	   
+	   <div id="directions-panel"  style="margin-left:0px;margin-top:0px;width:528px;height:600px;position:relative"></div>
+     </body>
+</html>
